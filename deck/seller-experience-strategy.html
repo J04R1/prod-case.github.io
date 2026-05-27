@@ -1,0 +1,1386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Seller Experience &amp; Supply — Product Team Strategy</title>
+<style>
+  /* ---------- Theme tokens ---------- */
+  :root {
+    --bg: #f7f8fb;
+    --surface: #ffffff;
+    --ink: #0f172a;
+    --ink-soft: #475569;
+    --muted: #94a3b8;
+    --line: #e5e7eb;
+    --accent: #2f6df6;
+    --accent-soft: #e8efff;
+    --good: #10b981;
+    --warn: #f59e0b;
+    --bad: #ef4444;
+    --radius: 14px;
+    --shadow: 0 10px 30px rgba(15, 23, 42, .07), 0 2px 6px rgba(15, 23, 42, .05);
+    --slide-w: 1280px;
+    --slide-h: 720px;
+    --font: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font-family: var(--font); }
+  body { min-height: 100vh; }
+
+  /* ---------- Deck shell ---------- */
+  .deck {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    padding: 28px 16px 96px;
+  }
+
+  .slide {
+    width: var(--slide-w);
+    height: var(--slide-h);
+    max-width: 100%;
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--line);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Slide chrome */
+  .slide__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 48px 0;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 600; color: var(--ink-soft); font-size: 13px; letter-spacing: .04em; text-transform: uppercase;
+  }
+  .brand__dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+  .slide__num { color: var(--muted); font-size: 12px; letter-spacing: .08em; }
+
+  .slide__body {
+    flex: 1;
+    padding: 18px 48px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-height: 0;
+  }
+
+  .eyebrow { color: var(--accent); font-weight: 600; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
+  h1, h2, h3 { margin: 0; color: var(--ink); }
+  h1 { font-size: 44px; line-height: 1.1; font-weight: 700; letter-spacing: -.01em; }
+  h2 { font-size: 30px; line-height: 1.50; font-weight: 700; letter-spacing: -.01em; }
+  h3 { font-size: 16px; line-height: 1.3; font-weight: 600; }
+  p { margin: 0; color: var(--ink-soft); line-height: 1.45; }
+
+  /* ---------- Title slide ---------- */
+  .title-slide .slide__body {
+    justify-content: center;
+    align-items: flex-start;
+    gap: 22px;
+    background:
+      radial-gradient(900px 380px at 85% -10%, var(--accent-soft) 0%, transparent 60%),
+      radial-gradient(700px 340px at -10% 110%, #eaf3ee 0%, transparent 55%);
+  }
+  .title-slide h1 { font-size: 56px; max-width: 880px; }
+  .title-slide .lede { font-size: 18px; color: var(--ink-soft); max-width: 760px; }
+  .title-meta { display: flex; gap: 32px; margin-top: 8px; }
+  .title-meta div { display: flex; flex-direction: column; gap: 4px; }
+  .title-meta span:first-child { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .title-meta span:last-child { font-weight: 600; color: var(--ink); }
+  .presented-by {
+    margin-top: 28px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    display: flex; align-items: baseline; gap: 10px;
+  }
+  .presented-by__label {
+    font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
+  }
+  .presented-by__name {
+    font-weight: 700; color: var(--ink); font-size: 14px;
+  }
+
+  /* ---------- Layout primitives ---------- */
+  .grid { display: grid; gap: 16px; }
+  .grid--2 { grid-template-columns: 1fr 1fr; }
+  .grid--3 { grid-template-columns: repeat(3, 1fr); }
+  .grid--4 { grid-template-columns: repeat(4, 1fr); }
+  .grid--5 { grid-template-columns: repeat(5, 1fr); }
+  .row { display: flex; gap: 16px; }
+  .col { display: flex; flex-direction: column; gap: 16px; flex: 1; min-width: 0; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .card--accent { border-color: transparent; background: var(--accent-soft); }
+  .card--ink { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .card--ink p, .card--ink h3 { color: #fff; }
+  .card--ink .eyebrow { color: #9bb7ff; }
+  .card__title { font-weight: 600; font-size: 14px; color: var(--ink); }
+  .card__sub { font-size: 12.5px; color: var(--ink-soft); line-height: 1.4; }
+
+  /* Quote / callout */
+  .callout {
+    border-left: 4px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.45;
+  }
+  .callout strong { color: var(--accent); }
+
+  /* Metric chip */
+  .metric {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .metric__label { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
+  .metric__value { font-size: 22px; font-weight: 700; color: var(--ink); letter-spacing: -.01em; }
+  .metric__delta { font-size: 12px; color: var(--good); font-weight: 600; }
+  .metric--bad .metric__delta { color: var(--bad); }
+
+  /* Illustrative "move" card — story-first target visual */
+  .move {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 12px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+  .move__label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+    color: var(--muted); font-weight: 600;
+  }
+  .move__label small { font-weight: 500; text-transform: none; letter-spacing: 0; }
+  .move__row {
+    display: grid;
+    grid-template-columns: 1fr 16px 1fr;
+    align-items: center;
+    gap: 6px;
+  }
+  .move__state { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .move__state span {
+    font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600;
+  }
+  .move__state strong {
+    font-size: 13px; line-height: 1.2; font-weight: 700; color: var(--ink-soft);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden; word-break: break-word;
+    min-height: 2.4em;
+  }
+  .move__state--to strong { color: var(--accent); }
+  .move__arrow {
+    font-size: 22px; line-height: 1; color: var(--accent);
+    text-align: center; font-weight: 700;
+  }
+  .move__bar {
+    position: relative; height: 6px; border-radius: 3px;
+    background: #eef2f7; overflow: hidden;
+  }
+  .move__bar span {
+    position: absolute; top: 0; left: 0; height: 100%;
+    background: #cbd5e1; border-radius: 3px;
+  }
+  .move__bar span.is-to {
+    background: var(--accent);
+    box-shadow: 0 0 0 2px #fff inset;
+  }
+  /* Reverse bar = lower-is-better; "to" shorter than "from" */
+  .move__bar--reverse span:not(.is-to) { background: #cbd5e1; }
+  .move__dots {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-auto-rows: 8px;
+    gap: 3px;
+  }
+  .move__dots i {
+    display: block; border-radius: 2px;
+    background: #eef2f7; border: 1px solid #e5e7eb;
+  }
+  .move__dots i.on { background: #cbd5e1; border-color: #cbd5e1; }
+  .move__dots i.to { border-color: var(--accent-soft); background: var(--accent-soft); }
+  .move__dots i.to.on { background: var(--accent); border-color: var(--accent); }
+  .move__note { font-size: 11px; color: var(--muted); }
+
+  /* Problem cards (slide 01) — prominent A/B/C blocks */
+  .pcard {
+    position: relative;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--c, var(--accent));
+    border-radius: 12px;
+    padding: 16px 18px 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, .04);
+  }
+  .pcard__head { display: flex; align-items: center; gap: 12px; }
+  .pcard__badge {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: var(--c-soft, var(--accent-soft));
+    color: var(--c, var(--accent));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 18px; letter-spacing: .02em;
+    flex-shrink: 0;
+  }
+  .pcard__heading { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .pcard__kicker {
+    font-size: 10.5px; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--c, var(--accent));
+  }
+  .pcard__title { font-size: 15px; font-weight: 700; color: var(--ink); line-height: 1.25; }
+  .pcard ul {
+    margin: 0; padding-left: 18px;
+    color: var(--ink-soft); font-size: 13px; line-height: 1.55;
+  }
+  .pcard ul li { margin-bottom: 3px; }
+  .pcard__foot {
+    font-size: 11px; color: var(--muted); font-style: italic;
+    border-top: 1px dashed var(--line); padding-top: 8px;
+  }
+  /* color variants */
+  .pcard--a { --c: #2f6df6; --c-soft: #e8efff; }
+  .pcard--b { --c: #10b981; --c-soft: #e7f7ef; }
+  .pcard--c { --c: #f59e0b; --c-soft: #fdf3e0; }
+
+  /* Seller funnel (slide 02) — compact end-to-end visual */
+  .funnel { display: flex; flex-direction: column; gap: 8px; }
+  .funnel__taper {
+    height: 10px;
+    background: linear-gradient(90deg, #c7d8ff 0%, #b6caff 35%, #8fb0ff 60%, #6a92ff 80%, #2f6df6 100%);
+    clip-path: polygon(0 0, 100% 25%, 100% 75%, 0 100%);
+    border-radius: 2px;
+  }
+  .funnel__stages {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 4px;
+    align-items: stretch;
+  }
+  .fstage {
+    position: relative;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 10px 8px 14px;
+    display: flex; flex-direction: column; gap: 2px;
+    min-width: 0;
+  }
+  .fstage + .fstage { margin-left: 6px; }
+  .fstage::before {
+    /* chevron point on the right */
+    content: "";
+    position: absolute; top: 50%; right: -7px; transform: translateY(-50%) rotate(45deg);
+    width: 12px; height: 12px;
+    background: #fff;
+    border-top: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+    z-index: 1;
+  }
+  .fstage:last-child::before { display: none; }
+  .fstage__num {
+    font-size: 9.5px; font-weight: 700; letter-spacing: .12em; color: var(--muted);
+  }
+  .fstage__label {
+    font-size: 12px; font-weight: 700; color: var(--ink); line-height: 1.2;
+  }
+  .fstage__sub { font-size: 10.5px; color: var(--muted); line-height: 1.2; }
+  /* Stages owned by our team */
+  .fstage--ours {
+    background: var(--accent-soft);
+    border-color: #c7d8ff;
+  }
+  .fstage--ours::before { background: var(--accent-soft); border-color: #c7d8ff; }
+  .fstage--ours .fstage__num { color: var(--accent); }
+  .funnel__legend {
+    display: flex; gap: 14px; font-size: 10.5px; color: var(--muted);
+    align-items: center; margin-top: 2px;
+  }
+  .funnel__legend .sw {
+    display: inline-block; width: 10px; height: 10px; border-radius: 3px;
+    margin-right: 5px; vertical-align: middle;
+  }
+  .funnel__legend .sw--ours { background: var(--accent-soft); border: 1px solid #c7d8ff; }
+  .funnel__legend .sw--other { background: #fff; border: 1px solid var(--line); }
+  /* Gain marker that sits above a funnel stage (used on slide 6 to mark where lifts land) */
+  .fstage { overflow: visible; }
+  .fstage--gain { box-shadow: 0 0 0 2px #d9f4e6 inset; }
+  .fstage__gain {
+    position: absolute;
+    top: -10px; left: 8px;
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--good);
+    color: #fff;
+    font-weight: 800;
+    font-size: 10.5px;
+    letter-spacing: .02em;
+    box-shadow: 0 4px 10px -4px rgba(16,185,129,.55);
+    white-space: nowrap;
+    z-index: 2;
+  }
+  .fstage__gain::before {
+    content: "▲";
+    font-size: 8px;
+    line-height: 1;
+  }
+
+  /* Pill */
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 600;
+    padding: 3px 9px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+    text-transform: uppercase; letter-spacing: .06em;
+  }
+  .pill--ink { background: #eef2f7; color: var(--ink-soft); }
+  .pill--good { background: #e7f7ef; color: var(--good); }
+  .pill--warn { background: #fdf3e0; color: var(--warn); }
+
+  /* Tables (compact) */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); color: var(--ink-soft); }
+  th { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; }
+  td strong { color: var(--ink); }
+
+  /* Driver tree */
+  .tree { display: grid; grid-template-columns: 300px 1fr; gap: 14px; align-items: stretch; }
+  .tree__root {
+    background: #314982; color: #fff; border-radius: 12px; padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 8px; justify-content: center;
+  }
+  .tree__root .label { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: #9bb7ff; font-weight: 600; }
+  .tree__root .name { font-size: 18px; font-weight: 700; }
+  .tree__root .formula { font-size: 12px; color: #cbd5e1; }
+  .tree__branches { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .branch { border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; background: #fff; }
+  .branch h4 { margin: 0 0 4px; font-size: 11.5px; color: var(--accent); letter-spacing: .06em; text-transform: uppercase; }
+  .branch ul { margin: 0; padding-left: 16px; color: var(--ink-soft); font-size: 11.5px; line-height: 1.45; }
+  .branch__kicker {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 9.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--accent); background: var(--accent-soft);
+    padding: 2px 7px; border-radius: 999px; margin-bottom: 6px;
+  }
+  .branch__kicker::before {
+    content: ""; display: inline-block;
+    width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+  }
+  .branch--guard .branch__kicker { color: var(--bad); background: #fde2e2; }
+  .branch--guard .branch__kicker::before { background: var(--bad); }
+
+  /* North-star fraction (in tree root) */
+  .ns-fraction {
+    display: flex; flex-direction: column; align-items: center;
+    align-self: center; gap: 2px; margin: 2px auto 4px;
+  }
+  .ns-fraction .num, .ns-fraction .den {
+    font-size: 26px; font-weight: 800; letter-spacing: -.01em; line-height: 1.1;
+  }
+  .ns-fraction .bar {
+    width: 100%; height: 2px; background: #9bb7ff; border-radius: 2px; margin: 2px 0;
+  }
+  .ns-def { font-size: 10.5px; color: #cbd5e1; line-height: 1.4; text-align: center; }
+  .ns-eq {
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+    flex-wrap: wrap; padding-top: 8px; border-top: 1px solid rgba(255,255,255,.12); margin-top: 4px;
+  }
+  .ns-eq__op { color: #9bb7ff; font-weight: 700; font-size: 12px; }
+  .ns-chip {
+    background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18);
+    border-radius: 6px; padding: 3px 7px; font-size: 10.5px; font-weight: 600; color: #fff;
+    white-space: nowrap;
+  }
+  .ns-chip--ours { background: var(--accent); border-color: var(--accent); }
+  .ns-foot { font-size: 10px; color: #9bb7ff; line-height: 1.4; text-align: center; margin-top: 4px; }
+
+  /* Phase timeline */
+  .timeline { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; position: relative; }
+  .timeline::before {
+    content: ""; position: absolute; top: 22px; left: 6%; right: 6%;
+    height: 2px; background: linear-gradient(90deg, var(--accent), #c7d8ff, var(--accent));
+    border-radius: 2px;
+  }
+  .phase { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 14px; position: relative; }
+  .phase__dot {
+    position: absolute; top: -8px; left: 14px;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 12px;
+    box-shadow: 0 0 0 4px #fff;
+  }
+  .phase h3 { margin-top: 16px; }
+  .phase__weeks { font-size: 11px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-top: 2px; }
+  .phase ul { margin: 8px 0 0; padding-left: 16px; color: var(--ink-soft); font-size: 12.5px; line-height: 1.5; }
+  .phase ul li { margin-bottom: 2px; }
+
+  /* Workstream cards — prominent: these are the key solution bets */
+  .ws {
+    position: relative;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px 16px 14px;
+    background: #fff;
+    display: flex; flex-direction: column; gap: 10px;
+    box-shadow: 0 1px 0 rgba(15,23,42,.02), 0 8px 24px -16px rgba(15,23,42,.18);
+    overflow: hidden;
+  }
+  .ws::before {
+    content: "";
+    position: absolute; inset: 0 0 auto 0; height: 6px;
+    background: var(--ws-color, var(--accent));
+  }
+  .ws__head { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+  .ws__chip {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; border-radius: 8px;
+    background: var(--ws-color, var(--accent)); color: #fff;
+    font-weight: 800; font-size: 13px; letter-spacing: .02em;
+  }
+  .ws__tag { font-weight: 700; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ws-color, var(--accent)); }
+  .ws .card__title { font-size: 15px; line-height: 1.35; }
+  .ws--A { --ws-color: #2f6df6; }
+  .ws--B { --ws-color: #10b981; }
+  .ws--C { --ws-color: #f59e0b; }
+  .ws ul { margin: 0; padding-left: 16px; color: var(--ink-soft); font-size: 12.5px; line-height: 1.5; }
+  .ws ul li::marker { color: var(--ws-color, var(--accent)); }
+
+  /* Operating cadence — a rhythm strip showing how we collaborate over time */
+  .cadence {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    align-items: stretch;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background:
+      linear-gradient(#fff, #fff) padding-box,
+      linear-gradient(90deg, rgba(47,109,246,.18), rgba(16,185,129,.22)) border-box;
+    overflow: hidden;
+  }
+  .cadence::before {
+    /* horizontal rhythm line that runs across all beats */
+    content: "";
+    position: absolute; left: 0; right: 0; top: 44px; height: 2px;
+    background: repeating-linear-gradient(90deg, var(--line) 0 8px, transparent 8px 14px);
+    z-index: 0;
+  }
+  .cadence__beat {
+    position: relative;
+    z-index: 1;
+    padding: 14px 16px 14px;
+    display: flex; flex-direction: column; gap: 8px;
+    border-right: 1px dashed var(--line);
+    background: #fff;
+  }
+  .cadence__beat:last-child { border-right: none; }
+  .cadence__freq {
+    align-self: flex-start;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #eef3ff;
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    box-shadow: 0 0 0 4px #fff; /* knock out the dashed line behind it */
+  }
+  .cadence__freq::before {
+    content: "";
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+  }
+  .cadence__title {
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 13.5px;
+    line-height: 1.35;
+  }
+  .cadence__with {
+    margin-top: auto;
+    font-size: 11.5px;
+    color: var(--ink-soft);
+  }
+  .cadence__with span {
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-size: 10px;
+    margin-right: 4px;
+  }
+  .cadence__beat--peak { background: linear-gradient(180deg, #f6fbf8 0%, #fff 60%); }
+  .cadence__beat--peak .cadence__freq {
+    background: #e6f7ef;
+    color: var(--good);
+  }
+  .cadence__beat--peak .cadence__freq::before { background: var(--good); }
+
+  /* Decision-points timeline (slide 5) — milestones on a single horizontal track */
+  .dline {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 36px 8px 8px;
+    margin-top: 4px;
+  }
+  .dline::before {
+    /* the track */
+    content: "";
+    position: absolute; left: 24px; right: 24px; top: 52px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 45%, var(--good) 55%, var(--good) 100%);
+    border-radius: 2px;
+    z-index: 0;
+  }
+  .dline__node {
+    position: relative;
+    z-index: 1;
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center;
+    padding: 0 8px;
+    gap: 4px;
+  }
+  .dline__when {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .dline__node--late .dline__when { color: var(--good); }
+  .dline__dot {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: #fff;
+    border: 3px solid var(--accent);
+    box-shadow: 0 0 0 4px #fff;
+    margin-bottom: 8px;
+  }
+  .dline__node--late .dline__dot { border-color: var(--good); }
+  .dline__node--peak .dline__dot {
+    background: var(--good);
+    border-color: var(--good);
+    width: 22px; height: 22px;
+    box-shadow: 0 0 0 4px #fff, 0 4px 14px -4px rgba(16,185,129,.55);
+  }
+  .dline__title {
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.25;
+  }
+  .dline__sub {
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    line-height: 1.4;
+  }
+
+  /* Footer */
+  .slide__footer {
+    position: absolute; bottom: 16px; left: 48px; right: 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 11px; color: var(--muted); letter-spacing: .06em;
+  }
+  .slide__footer .progress { display: flex; gap: 4px; }
+  .slide__footer .progress span { width: 22px; height: 3px; border-radius: 2px; background: var(--line); }
+  .slide__footer .progress span.is-active { background: var(--accent); }
+
+  /* Print */
+  @media print {
+    body { background: #fff; }
+    .deck { padding: 0; gap: 0; }
+    .slide { box-shadow: none; border: none; border-radius: 0; page-break-after: always; }
+  }
+
+  /* Responsive scale */
+  @media (max-width: 1340px) {
+    .slide { transform-origin: top center; }
+  }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+  <!-- =========================================================
+       Slide template (reusable):
+       <section class="slide" data-num="N">
+         <div class="slide__header">
+           <div class="brand"><span class="brand__dot"></span> Tise · Seller Experience &amp; Supply</div>
+           <div class="slide__num">NN / 06</div>
+         </div>
+         <div class="slide__body"> ...content... </div>
+         <div class="slide__footer">
+           <span>Footer left</span>
+           <div class="progress"></div>
+         </div>
+       </section>
+       Progress dots are injected by JS based on data-num.
+       ========================================================= -->
+
+  <!-- 0 · TITLE -->
+  <section class="slide title-slide" data-num="0">
+    <div class="slide__header">
+      <div class="brand"><span class="brand__dot"></span> Tise · Seller Experience &amp; Supply</div>
+      <div class="slide__num">00 / 07</div>
+    </div>
+    <div class="slide__body">
+      <span class="eyebrow">Product Strategy · 90-day horizon</span>
+      <h1>A liquid, relevant inventory — by design.</h1>
+      <p class="lede">
+        Empower sellers with intuitive tools and seamless integrations to build a liquid & relevant Tise inventorythat buyers actually convert on.
+        Measured by <strong>Sell-through Rate</strong>, led by the <strong>Supply Quality Index</strong>.
+      </p>
+      <div class="title-meta">
+        <div><span>Scope</span><span>Listing creation · Seller tools · Inventory density</span></div>
+        <div><span>Horizon</span><span>90 days</span></div>
+        <div><span>Cross-functional Team</span><span>Engineers, designers, ML engineers and PM</span></div>
+      </div>
+      <div class="presented-by">
+        <span class="presented-by__label">Presented by</span>
+        <span class="presented-by__name">Johann Arispe</span>
+      </div>
+
+    </div>
+    <div class="slide__footer">
+      <span>Seller Experience &amp; Supply</span>
+      <div class="progress"></div>
+    </div>
+  </section>
+
+  <!-- 1 · PROBLEM -->
+  <section class="slide" data-num="1">
+    <div class="slide__header">
+      <div class="brand"><span class="brand__dot"></span> Tise · Seller Experience &amp; Supply</div>
+      <div class="slide__num">01 / 07</div>
+    </div>
+    <div class="slide__body">
+      <div>
+        <span class="eyebrow">01 · The opportunity</span>
+        <h2>Tise has more supply than it converts.</h2>
+      </div>
+
+      <div class="callout">
+        Listings are created <strong>too shallow to be discoverable</strong>, sellers have <strong>no progression ladder</strong> once they publish, and inventory <strong>goes stale</strong> because nothing nudges it to refresh — so the marketplace <em>looks</em> liquid but is not.
+      </div>
+
+      <p style="font-size:13px; color:var(--ink-soft); line-height:1.5;">
+        <strong style="color:var(--ink);">What "good" looks like for us —</strong>
+        a <em>liquid and relevant</em> inventory: a buyer searching or browsing on Tise consistently finds well-described, fairly-priced, in-stock items from responsive sellers, and a seller publishing a listing has a high chance of selling it within a reasonable window.
+        <strong style="color:var(--ink);">Liquidity</strong> is the rate at which inventory turns into sales; <strong style="color:var(--ink);">relevance</strong> is the fit between what is listed and what buyers actually search for.
+      </p>
+
+      <div class="grid grid--3" style="flex: 1; align-content: start; gap:18px;">
+        <!-- A. Listing creation -->
+        <div class="pcard pcard--a">
+          <div class="pcard__head">
+            <div class="pcard__badge">A</div>
+            <div class="pcard__heading">
+              <span class="pcard__kicker">Listing creation</span>
+              <span class="pcard__title">Quality is left to chance</span>
+            </div>
+          </div>
+          <ul>
+            <li>Title capped at <strong>20 chars</strong> → weak CTR &amp; search recall</li>
+            <li>Description <strong>optional</strong>, no AI assist</li>
+            <li>Only <strong>4 of 8 photo slots</strong> visible upfront — most listings stop at the median 4</li>
+            <li><strong>No price guidance</strong> → mispriced inventory</li>
+          </ul>
+        </div>
+
+        <!-- B. Seller tools -->
+        <div class="pcard pcard--b">
+          <div class="pcard__head">
+            <div class="pcard__badge">B</div>
+            <div class="pcard__heading">
+              <span class="pcard__kicker">Seller tools</span>
+              <span class="pcard__title">Infrastructure present, progression absent</span>
+            </div>
+          </div>
+          <ul>
+            <li>Dashboard exists — not actionable per listing</li>
+            <li>No <strong>response-time</strong> or <strong>Top Seller</strong> signals</li>
+            <li>No <strong>bulk-edit / relist</strong> tooling</li>
+            <li>No <strong>membership tier</strong> for power sellers — monetisation &amp; loyalty lever untapped</li>
+          </ul>
+          <span class="pcard__foot">Evidence is thinner here</span>
+        </div>
+
+        <!-- C. Inventory density -->
+        <div class="pcard pcard--c">
+          <div class="pcard__head">
+            <div class="pcard__badge">C</div>
+            <div class="pcard__heading">
+              <span class="pcard__kicker">Inventory density</span>
+              <span class="pcard__title">Supply looks deep but doesn't turn</span>
+            </div>
+          </div>
+          <ul>
+            <li>No <strong>freshness</strong> or relist nudge</li>
+            <li><strong>ReTise</strong> buried; dormant sellers untouched</li>
+            <li>No <strong>quality-aware ranking</strong> in feed/search</li>
+            <li>Stale listings consume impressions</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:auto;">
+        <div class="metric" style="flex:1;">
+          <span class="metric__label">Why now</span>
+          <span class="metric__value">Supply-side leverage</span>
+          <span class="metric__delta">Better listings lift both Buyer Rate (% of visitors who buy) and AOV (average order value) at the same time</span>
+        </div>
+        <div class="metric" style="flex:1;">
+          <span class="metric__label">Where the value sits</span>
+          <span class="metric__value">First listing + never-relisted</span>
+          <span class="metric__delta">Both inside our scope</span>
+        </div>
+        <div class="metric" style="flex:1;">
+          <span class="metric__label">Confidence</span>
+          <span class="metric__value">High on A &amp; C</span>
+          <span class="metric__delta">Evidence-backed in product analysis</span>
+        </div>
+      </div>
+    </div>
+    <div class="slide__footer">
+      <span>01 · Problem &amp; opportunity</span>
+      <div class="progress"></div>
+    </div>
+  </section>
+
+  <!-- 2 · NORTH STAR & METRICS -->
+  <section class="slide" data-num="2">
+    <div class="slide__header">
+      <div class="brand"><span class="brand__dot"></span> Tise · Seller Experience &amp; Supply</div>
+      <div class="slide__num">02 / 07</div>
+    </div>
+    <div class="slide__body">
+      <div>
+        <span class="eyebrow">02 · North star &amp; metrics</span>
+        <h2>One needle to move.</h2>
+      </div>
+
+      <!-- Seller funnel — end-to-end visual of where our metrics live -->
+      <div class="funnel">
+        <div style="display:flex; justify-content:space-between; align-items:baseline;">
+          <span class="eyebrow" style="color:var(--ink-soft);">Seller journey · end-to-end</span>
+          <span class="funnel__legend">
+            <span><i class="sw sw--ours"></i>Owned by our team</span>
+            <span><i class="sw sw--other"></i>Adjacent / handoff</span>
+          </span>
+        </div>
+        <div class="funnel__taper" aria-hidden="true"></div>
+        <div class="funnel__stages">
+          <div class="fstage">
+            <span class="fstage__num">01</span>
+            <span class="fstage__label">Sign-up</span>
+            <span class="fstage__sub">New seller</span>
+          </div>
+          <div class="fstage fstage--ours">
+            <span class="fstage__num">02</span>
+            <span class="fstage__label">First listing published</span>
+            <span class="fstage__sub">Create flow</span>
+          </div>
+          <div class="fstage fstage--ours">
+            <span class="fstage__num">03</span>
+            <span class="fstage__label">Meets quality bar</span>
+            <span class="fstage__sub">SQI ✓</span>
+          </div>
+          <div class="fstage">
+            <span class="fstage__num">04</span>
+            <span class="fstage__label">Impressions &amp; intent</span>
+            <span class="fstage__sub">Feed / search</span>
+          </div>
+          <div class="fstage fstage--ours">
+            <span class="fstage__num">05</span>
+            <span class="fstage__label">First sale</span>
+            <span class="fstage__sub">Sell-through ✓</span>
+          </div>
+          <div class="fstage fstage--ours">
+            <span class="fstage__num">06</span>
+            <span class="fstage__label">2nd listing / repeat</span>
+            <span class="fstage__sub">Progression</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="card card--ink" style="flex:1;">
+          <span class="eyebrow">North star</span>
+          <div style="font-size:22px; font-weight:700; margin-top:2px;">Sell-through Rate <span style="font-weight:500; opacity:.8;">(30d)</span></div>
+          <p style="font-size:12.5px;">% of newly-published listings that sell within 30 days — the cleanest measure of liquid &amp; relevant inventory.</p>
+        </div>
+        <div class="card card--accent" style="flex:1;">
+          <span class="eyebrow">Operating metric (leading)</span>
+          <div style="font-size:22px; font-weight:700; margin-top:2px; color:var(--ink);">Supply Quality Index (SQI)</div>
+          <p style="font-size:12.5px; color:var(--ink-soft);">
+            ≥4 photos · brand · size · description ≥80 chars · price within ±30% of category-median comps.
+          </p>
+        </div>
+      </div>
+
+      <!-- Driver tree -->
+      <div class="tree">
+        <div class="tree__root">
+          <span class="label" style="text-align:center;">Program north star</span>
+          <div class="ns-fraction">
+            <span class="num">GMV</span>
+            <span class="bar" aria-hidden="true"></span>
+            <span class="den">MAU</span>
+          </div>
+          <p class="ns-def">
+            <strong style="color:#fff;">Gross Merchandise Value</strong> sold,
+            divided by <strong style="color:#fff;">Monthly Active Users</strong>.
+          </p>
+          <div class="ns-eq">
+            <span class="ns-chip ns-chip--ours">Buyer Rate</span>
+            <span class="ns-eq__op">×</span>
+            <span class="ns-chip">Orders per Buyer</span>
+            <span class="ns-eq__op">×</span>
+            <span class="ns-chip ns-chip--ours">AOV</span>
+          </div>
+          <span class="ns-foot">Better listings raise card CTR and view-to-intent (Buyer Rate), better-priced and higher-tier listings raise AOV, and a healthier inventory pool sustains both over time.</span>
+        </div>
+        <div class="tree__branches">
+          <div class="branch">
+            <span class="branch__kicker">Driver 1</span>
+            <h4>Listing creation health</h4>
+            <ul>
+              <li>Create-flow completion · time-to-publish</li>
+              <li>Photos / listing · brand+size coverage</li>
+              <li>AI-assist usage · price-vs-comp deviation</li>
+            </ul>
+          </div>
+          <div class="branch">
+            <span class="branch__kicker">Driver 2</span>
+            <h4>Seller progression</h4>
+            <ul>
+              <li>Activation · time-to-second-listing</li>
+              <li>Casual → active graduation</li>
+              <li>D30 / D90 retention · response time</li>
+            </ul>
+          </div>
+          <div class="branch">
+            <span class="branch__kicker">Driver 3</span>
+            <h4>Inventory density</h4>
+            <ul>
+              <li>Active listings / market / category</li>
+              <li>New + reactivated listings / week</li>
+              <li>Stale-listing share · % fresh in last 30d</li>
+            </ul>
+          </div>
+          <div class="branch branch--guard" style="border-color:#fde2e2; background:#fff7f7;">
+            <span class="branch__kicker">Guardrail</span>
+            <h4 style="color:var(--bad);">Must not regress</h4>
+            <ul>
+              <li>Refund / Not As Described disputes · moderation removal</li>
+              <li>Customer Satisfaction Score · support tickets</li>
+              <li>Time-to-payout</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide__footer">
+      <span>02 · North star &amp; metrics</span>
+      <div class="progress"></div>
+    </div>
+  </section>
+
+  <!-- 3 · 90-DAY PLAN -->
+  <section class="slide" data-num="3">
+    <div class="slide__header">
+      <div class="brand"><span class="brand__dot"></span> Tise · Seller Experience &amp; Supply</div>
+      <div class="slide__num">03 / 07</div>
+    </div>
+    <div class="slide__body">
+      <div>
+        <span class="eyebrow">03 · 90-day plan</span>
+        <h2>Where the 90 days take us.</h2>
+      </div>
+
+      <!-- Opener: illustrative moves -->
+      <div>
+        <span class="eyebrow" style="color:var(--ink-soft);">The horizon · moves from today → day 90</span>
+        <div class="grid grid--4" style="margin-top:10px; gap:14px;">
+          <div class="move">
+            <span class="move__label">Sell-through <small>(30d)</small></span>
+            <div class="move__row">
+              <div class="move__state move__state--from"><span>Today</span><strong>Shallow turn</strong></div>
+              <div class="move__arrow" aria-hidden="true">›</div>
+              <div class="move__state move__state--to"><span>Day 90</span><strong>Liquid turn</strong></div>
+            </div>
+            <div class="move__bar"><span style="width:25%"></span><span style="width:55%" class="is-to"></span></div>
+            <span class="move__note">More new listings sell within 30 days of publish</span>
+          </div>
+
+          <div class="move">
+            <span class="move__label">SQI</span>
+            <div class="move__row">
+              <div class="move__state move__state--from"><span>Today</span><strong>Left to chance</strong></div>
+              <div class="move__arrow">›</div>
+              <div class="move__state move__state--to"><span>Day 90</span><strong>Quality by default</strong></div>
+            </div>
+            <div class="move__bar"><span style="width:30%"></span><span style="width:75%" class="is-to"></span></div>
+            <span class="move__note">Leading indicator on new listings</span>
+          </div>
+
+          <div class="move">
+            <span class="move__label">Photos / listing</span>
+            <div class="move__row">
+              <div class="move__state move__state--from"><span>Today</span><strong>4 slots shown</strong></div>
+              <div class="move__arrow">›</div>
+              <div class="move__state move__state--to"><span>Day 90</span><strong>8 slots used</strong></div>
+            </div>
+            <div class="move__dots" aria-hidden="true">
+              <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i>
+              <i class="to on"></i><i class="to on"></i><i class="to on"></i><i class="to on"></i><i class="to on"></i><i class="to"></i><i class="to"></i><i class="to"></i>
+            </div>
+            <span class="move__note">Median +1 photo</span>
+          </div>
+
+          <div class="move">
+            <span class="move__label">Time-to-2nd listing</span>
+            <div class="move__row">
+              <div class="move__state move__state--from"><span>Today</span><strong>One-and-done</strong></div>
+              <div class="move__arrow">›</div>
+              <div class="move__state move__state--to"><span>Day 90</span><strong>Habit forms</strong></div>
+            </div>
+            <div class="move__bar move__bar--reverse"><span style="width:90%"></span><span style="width:60%" class="is-to"></span></div>
+            <span class="move__note">Shorter loop · faster relist</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- The plan -->
+      <div>
+        <span class="eyebrow" style="color:var(--ink-soft);">How we get there</span>
+        <p style="margin-top:4px; font-size:13px;">Insight (Phase 1) and listing-creation wins (Phase 2) run <strong>in parallel</strong>. Seller progression (Phase 3) starts once cohort data lands.</p>
+      </div>
+
+      <div class="timeline" style="margin-top:0;">
+        <div class="phase">
+          <div class="phase__dot">1</div>
+          <h3>Instrument &amp; diagnose</h3>
+          <div class="phase__weeks">Weeks 1 – 3</div>
+          <ul>
+            <li>Audit lifecycle tracking end-to-end</li>
+            <li>Baseline dashboard: sell-through, SQI, funnel</li>
+            <li>Define &amp; backfill <strong>SQI v1</strong></li>
+            <li>Cohort the seller base by tier</li>
+            <li>Sprig surveys on 3 cohorts</li>
+          </ul>
+          <span class="pill pill--ink" style="margin-top:10px;">Outcome: baseline, validated SQI, ranked backlog</span>
+        </div>
+
+        <div class="phase">
+          <div class="phase__dot">2</div>
+          <h3>Listing-creation quick wins</h3>
+          <div class="phase__weeks">Weeks 2 – 6 · parallel</div>
+          <ul>
+            <li>Title cap <strong>20 → 60–80 chars</strong></li>
+            <li><strong>AI description</strong> assist</li>
+            <li><strong>Photo-count nudge</strong> · 8 slots upfront</li>
+            <li><strong>Price-guidance</strong> widget</li>
+          </ul>
+          <span class="pill" style="margin-top:10px;">All A/B in Margit testbed with guardrails</span>
+        </div>
+
+        <div class="phase">
+          <div class="phase__dot">3</div>
+          <h3>Progression &amp; density</h3>
+          <div class="phase__weeks">Weeks 5 – 10</div>
+          <ul>
+            <li><strong>Seller Dashboard v2</strong> — public quality score</li>
+            <li><strong>Response-time badges</strong> on profile/card</li>
+            <li><strong>Top Seller</strong> status + ranking signal</li>
+            <li><strong>Dormant ReTise</strong> reactivation loop</li>
+            <li><strong>Bulk-edit</strong> tooling · Power-seller membership interviews</li>
+          </ul>
+          <span class="pill pill--good" style="margin-top:10px;">Builds the ladder + keeps inventory fresh</span>
+        </div>
+      </div>
+
+      <p style="margin-top:auto; font-size:12.5px; color:var(--ink-soft);">
+        <strong style="color:var(--accent);">Phase tail · Weeks 11–13 —</strong>
+        synthesis &amp; recommendation: scorecard of every experiment, re-ranked backlog, and a one-page post-90d bet (Power-seller membership · SQI in ranking · catalogue import).
+      </p>
+    </div>
+    <div class="slide__footer">
+      <span>03 · 90-day plan</span>
+      <div class="progress"></div>
+    </div>
+  </section>
+
+  <!-- 4 · ROADMAP & EXPERIMENTS -->
+  <section class="slide" data-num="4">
+    <div class="slide__header">
+      <div class="brand"><span class="brand__dot"></span> Tise · Seller Experience &amp; Supply</div>
+      <div class="slide__num">04 / 07</div>
+    </div>
+    <div class="slide__body">
+      <div>
+        <span class="eyebrow">04 · Roadmap &amp; experiments</span>
+        <h2>Three workstreams, one ranked backlog.</h2>
+      </div>
+
+      <!-- Workstreams -->
+      <div class="grid grid--3">
+        <div class="ws ws--A">
+          <div class="ws__head">
+            <span class="ws__chip">A</span>
+            <span class="ws__tag">WS-A · Listing creation</span>
+          </div>
+          <div class="card__title">Make the flow produce high-SQI listings by default</div>
+          <ul>
+            <li>Title cap · AI description · photos · price guidance</li>
+            <li>Drafts + autosave · category-aware required fields</li>
+          </ul>
+        </div>
+        <div class="ws ws--B">
+          <div class="ws__head">
+            <span class="ws__chip">B</span>
+            <span class="ws__tag">WS-B · Seller tools</span>
+          </div>
+          <div class="card__title">Give sellers the tools to self-diagnose &amp; improve</div>
+          <ul>
+            <li>Dashboard v2 · response-time badges · Top Seller status</li>
+            <li>Bulk-edit · Power-seller membership design &amp; validation</li>
+          </ul>
+        </div>
+        <div class="ws ws--C">
+          <div class="ws__head">
+            <span class="ws__chip">C</span>
+            <span class="ws__tag">WS-C · Inventory density</span>
+          </div>
+          <div class="card__title">Keep the pool fresh, relevant, and turning</div>
+          <ul>
+            <li>Dormant ReTise re-engagement · freshness nudge</li>
+            <li>SQI as ranking signal (with discovery)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Ranked backlog (top 8 of 15) -->
+      <div>
+        <span class="eyebrow" style="color:var(--ink-soft);">Top experiments — ranked by impact × feasibility</span>
+        <table style="margin-top:6px;">
+          <thead>
+            <tr>
+              <th style="width:32px;">#</th>
+              <th style="width:60px;">WS</th>
+              <th>Experiment</th>
+              <th>Hypothesis</th>
+              <th style="width:80px;">Effort</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>1</strong></td><td><span class="pill">A</span></td><td><strong>Title cap 20 → 60–80</strong></td><td>Longer, descriptive titles → higher <strong>card CTR</strong> &amp; search recall</td><td><span class="pill pill--good">S</span></td></tr>
+            <tr><td><strong>2</strong></td><td><span class="pill">A</span></td><td><strong>AI description assist</strong></td><td>Lower friction → more complete listings, lifting <strong>SQI</strong> &amp; view-to-intent</td><td><span class="pill pill--good">S</span></td></tr>
+            <tr><td><strong>4</strong></td><td><span class="pill">A</span></td><td><strong>Photo-count nudge · 8 slots</strong></td><td>Surfacing all slots → more photos per listing → higher <strong>card CTR</strong></td><td><span class="pill pill--good">S</span></td></tr>
+            <tr><td><strong>5</strong></td><td><span class="pill">A</span></td><td><strong>Price-guidance widget</strong></td><td>Fewer mispriced listings → faster <strong>14-day sell-through</strong></td><td><span class="pill pill--warn">M</span></td></tr>
+            <tr><td><strong>6</strong></td><td><span class="pill pill--good">B</span></td><td><strong>Seller Dashboard v2</strong></td><td>Self-diagnosis → sellers edit weak listings → <strong>SQI</strong> rises on edits</td><td><span class="pill pill--warn">M</span></td></tr>
+            <tr><td><strong>8</strong></td><td><span class="pill pill--good">B</span></td><td><strong>Top Seller status + ranking signal</strong></td><td>Quality signal in ranking → more conversion from top sellers → <strong>power-seller GMV share</strong> grows</td><td><span class="pill pill--warn">M</span></td></tr>
+            <tr><td><strong>10</strong></td><td><span class="pill pill--warn">C</span></td><td><strong>Dormant-seller ReTise re-engagement</strong></td><td>Cheap reactivation prompt → dormant supply returns → <strong>reactivated listings</strong> + downstream GMV</td><td><span class="pill pill--good">S</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="slide__footer">
+      <span>04 · Roadmap &amp; experiments</span>
+      <div class="progress"></div>
+    </div>
+  </section>
+
+  <!-- 5 · COLLABORATION & TEAM ALIGNMENT -->
+  <section class="slide" data-num="5">
+    <div class="slide__header">
+      <div class="brand"><span class="brand__dot"></span> Tise · Seller Experience &amp; Supply</div>
+      <div class="slide__num">05 / 07</div>
+    </div>
+    <div class="slide__body">
+      <div>
+        <span class="eyebrow">05 · Collaboration &amp; team alignment</span>
+        <h2>Who we need, when we sync, where we decide.</h2>
+      </div>
+
+      <!-- Dependencies & handoffs -->
+      <div>
+        <span class="eyebrow" style="color:var(--ink-soft);">Key dependencies &amp; handoffs · who we need and what we give back</span>
+        <div class="grid grid--5" style="margin-top:8px;">
+          <div class="card" style="border-top:3px solid var(--accent);">
+            <span class="pill">Platform</span>
+            <div class="card__title">Experimentation (Margit)</div>
+            <span class="card__sub"><strong>Need:</strong> A/B access &amp; experiment review.<br><strong>Give back:</strong> pre-registered experiment specs.</span>
+          </div>
+          <div class="card" style="border-top:3px solid var(--accent);">
+            <span class="pill">Analytics</span>
+            <div class="card__title">Event coverage</div>
+            <span class="card__sub"><strong>Need:</strong> close lifecycle event gaps.<br><strong>Give back:</strong> SQI + lifecycle event definitions.</span>
+          </div>
+          <div class="card" style="border-top:3px solid var(--good);">
+            <span class="pill pill--good">Discovery / Feed</span>
+            <div class="card__title">Ranking integration</div>
+            <span class="card__sub"><strong>Need:</strong> SQI + Top Seller signal consumed by ranking.<br><strong>Give back:</strong> signal spec + offline validation.</span>
+          </div>
+          <div class="card" style="border-top:3px solid var(--good);">
+            <span class="pill pill--good">Buyer Conversion</span>
+            <div class="card__title">Message-to-sale</div>
+            <span class="card__sub"><strong>Need:</strong> buyer-side instrumentation of response time.<br><strong>Give back:</strong> response-time &amp; badge events.</span>
+          </div>
+          <div class="card" style="border-top:3px solid var(--warn);">
+            <span class="pill pill--warn">Commercial / PM lead</span>
+            <div class="card__title">Power-seller membership</div>
+            <span class="card__sub"><strong>Need:</strong> go / no-go on a paid tier for top sellers.<br><strong>Give back:</strong> Phase 3 validation paper + pricing &amp; feature shortlist.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Operating cadence -->
+      <div>
+        <span class="eyebrow" style="color:var(--ink-soft);">Operating cadence · how we work with the team</span>
+        <div class="cadence" style="margin-top:8px;">
+          <div class="cadence__beat">
+            <div class="cadence__freq">Weekly</div>
+            <div class="cadence__title">Dashboard + live readouts</div>
+            <div class="cadence__with"><span>with</span> Team</div>
+          </div>
+          <div class="cadence__beat">
+            <div class="cadence__freq">Bi-weekly</div>
+            <div class="cadence__title">Backlog re-rank · deps</div>
+            <div class="cadence__with"><span>with</span> Team + partners</div>
+          </div>
+          <div class="cadence__beat">
+            <div class="cadence__freq">End of phase</div>
+            <div class="cadence__title">One-page written readout</div>
+            <div class="cadence__with"><span>with</span> Stakeholders &amp; leads</div>
+          </div>
+          <div class="cadence__beat cadence__beat--peak">
+            <div class="cadence__freq">Day 90</div>
+            <div class="cadence__title">Program review + bet</div>
+            <div class="cadence__with"><span>with</span> Exec &amp; program owners</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Decision points across the horizon -->
+      <div>
+        <span class="eyebrow" style="color:var(--ink-soft);">Key team decision points · across the 90 days &amp; roadmap</span>
+        <div class="dline">
+          <div class="dline__node">
+            <span class="dline__when">Week 3</span>
+            <span class="dline__dot"></span>
+            <span class="dline__title">SQI v1 locked</span>
+            <span class="dline__sub">Quality bar signed off · ranked backlog approved by stakeholders.</span>
+          </div>
+          <div class="dline__node">
+            <span class="dline__when">Week 6</span>
+            <span class="dline__dot"></span>
+            <span class="dline__title">Quick-wins gate</span>
+            <span class="dline__sub">Title cap · AI desc · photo nudge · price guidance → ship / iterate / kill.</span>
+          </div>
+          <div class="dline__node dline__node--late">
+            <span class="dline__when">Week 8</span>
+            <span class="dline__dot"></span>
+            <span class="dline__title">Top Seller handoff</span>
+            <span class="dline__sub">Signal spec to Discovery · ranking integration window committed.</span>
+          </div>
+          <div class="dline__node dline__node--late">
+            <span class="dline__when">Week 10</span>
+            <span class="dline__dot"></span>
+            <span class="dline__title">Dashboard v2 GA gate</span>
+            <span class="dline__sub">Rollout call: all sellers vs cohort · NPS / CSAT guardrail check.</span>
+          </div>
+          <div class="dline__node dline__node--late dline__node--peak">
+            <span class="dline__when">Day 90</span>
+            <span class="dline__dot"></span>
+            <span class="dline__title">Post-90d bet</span>
+            <span class="dline__sub">Power-seller membership go / no-go · SQI productionised in ranking · catalogue import.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide__footer">
+      <span>05 · Collaboration &amp; team alignment</span>
+      <div class="progress"></div>
+    </div>
+  </section>
+
+  <!-- 6 · PROGRESS & SUCCESS (closing) -->
+  <section class="slide" data-num="6">
+    <div class="slide__header">
+      <div class="brand"><span class="brand__dot"></span> Tise · Seller Experience &amp; Supply</div>
+      <div class="slide__num">06 / 07</div>
+    </div>
+    <div class="slide__body">
+      <div>
+        <span class="eyebrow">06 · Progress &amp; success</span>
+        <h2>From <em>listed</em> to <em>sold</em> — a measurable shift in seller economics.</h2>
+        <p style="margin:6px 0 0; color:var(--ink-soft); font-size:14px; max-width:980px;">
+          Tise has the supply. The gap is conversion of that supply into sales. In 90 days we move the listing flow, the seller toolkit, and the inventory pool — and we measure it on one bar.
+        </p>
+      </div>
+
+      <!-- Problem → Solution -->
+      <div class="grid grid--2">
+        <div class="card" style="border-top:3px solid var(--bad); background:#fff;">
+          <span class="eyebrow" style="color:var(--bad);">The problem</span>
+          <div class="card__title">Supply doesn't convert</div>
+          <ul style="margin:6px 0 0; padding-left:16px; color:var(--ink-soft); font-size:12.5px; line-height:1.55;">
+            <li>Listings are <strong>thin</strong> — short titles, blank descriptions, few photos</li>
+            <li>Sellers can't see <strong>what to fix</strong> or what good looks like</li>
+            <li>The pool <strong>doesn't turn</strong> — stale supply drowns out fresh</li>
+          </ul>
+        </div>
+        <div class="card" style="border-top:3px solid #2f6df6; background:#fff;">
+          <span class="eyebrow" style="color:#2f6df6;">Our solution</span>
+          <div class="card__title">Three workstreams, one ranked backlog</div>
+          <ul style="margin:6px 0 0; padding-left:16px; color:var(--ink-soft); font-size:12.5px; line-height:1.55;">
+            <li><strong>A · Listing creation</strong> — high-SQI by default</li>
+            <li><strong>B · Seller tools</strong> — self-diagnose &amp; improve</li>
+            <li><strong>C · Inventory density</strong> — keep the pool turning</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- The impact, told on the seller journey -->
+      <div class="funnel" style="margin-top: 40px;">
+        <div style="display:flex; justify-content:space-between; align-items:baseline;">
+          <span class="eyebrow" style="color:var(--good);">The impact · where the gains land on the seller journey</span>
+          <span class="funnel__legend">
+            <span><i class="sw" style="background:var(--good); border:1px solid var(--good);"></i>Targeted lift</span>
+            <span><i class="sw sw--ours"></i>Owned by our team</span>
+          </span>
+        </div>
+        <div class="funnel__taper" aria-hidden="true"></div>
+        <div class="funnel__stages" style="margin-top:14px;">
+          <div class="fstage">
+            <span class="fstage__num">01</span>
+            <span class="fstage__label">Sign-up</span>
+            <span class="fstage__sub">New seller</span>
+          </div>
+          <div class="fstage fstage--ours fstage--gain">
+            <span class="fstage__gain">~2× publish quality</span>
+            <span class="fstage__num">02</span>
+            <span class="fstage__label">First listing published</span>
+            <span class="fstage__sub">Create flow</span>
+          </div>
+          <div class="fstage fstage--ours fstage--gain">
+            <span class="fstage__gain">+15 pts SQI pass-rate</span>
+            <span class="fstage__num">03</span>
+            <span class="fstage__label">Meets quality bar</span>
+            <span class="fstage__sub">SQI ✓</span>
+          </div>
+          <div class="fstage fstage--gain">
+            <span class="fstage__gain">Higher card CTR</span>
+            <span class="fstage__num">04</span>
+            <span class="fstage__label">Impressions &amp; intent</span>
+            <span class="fstage__sub">Feed / search</span>
+          </div>
+          <div class="fstage fstage--ours fstage--gain">
+            <span class="fstage__gain">+15–25% sold in 30d</span>
+            <span class="fstage__num">05</span>
+            <span class="fstage__label">First sale</span>
+            <span class="fstage__sub">Sell-through ✓</span>
+          </div>
+          <div class="fstage fstage--ours fstage--gain">
+            <span class="fstage__gain">+5–8% AOV · repeat</span>
+            <span class="fstage__num">06</span>
+            <span class="fstage__label">2nd listing / repeat</span>
+            <span class="fstage__sub">Progression</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Closing callout -->
+   
+    </div>
+    <div class="slide__footer">
+      <span>06 · Progress &amp; success</span>
+      <div class="progress"></div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  // Build the progress dots in each slide footer based on total slide count.
+  (function () {
+    const slides = document.querySelectorAll('.slide');
+    const total = slides.length;
+    slides.forEach((slide) => {
+      const num = parseInt(slide.dataset.num, 10);
+      const footer = slide.querySelector('.slide__footer .progress');
+      if (!footer) return;
+      for (let i = 0; i < total; i++) {
+        const dot = document.createElement('span');
+        if (i === num) dot.classList.add('is-active');
+        footer.appendChild(dot);
+      }
+      // Update top-right counter to match real total
+      const counter = slide.querySelector('.slide__num');
+      if (counter) {
+        const n = String(num).padStart(2, '0');
+        const t = String(total - 1).padStart(2, '0'); // 0-indexed last
+        counter.textContent = `${n} / ${String(total).padStart(2, '0')}`;
+      }
+    });
+
+    // Keyboard navigation: scroll to next/prev slide
+    const order = Array.from(slides);
+    let current = 0;
+    function scrollTo(i) {
+      current = Math.max(0, Math.min(order.length - 1, i));
+      order[current].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    document.addEventListener('keydown', (e) => {
+      if (['ArrowRight', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); scrollTo(current + 1); }
+      else if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); scrollTo(current - 1); }
+      else if (e.key === 'Home') { e.preventDefault(); scrollTo(0); }
+      else if (e.key === 'End') { e.preventDefault(); scrollTo(order.length - 1); }
+    });
+    // Track which slide is in view
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting && en.intersectionRatio > 0.5) {
+          current = order.indexOf(en.target);
+        }
+      });
+    }, { threshold: [0.5] });
+    order.forEach((s) => io.observe(s));
+  })();
+</script>
+</body>
+</html>
